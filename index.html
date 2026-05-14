@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Archivo Secreto</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Courier New", monospace;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at top, rgba(0, 255, 170, 0.08), transparent 35%),
+        linear-gradient(135deg, #05070a, #101827 55%, #05070a);
+      color: #d1fae5;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 42px 42px;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "TOP SECRET  •  CLASSIFIED  •  ACCESS RESTRICTED";
+      position: fixed;
+      top: 24px;
+      left: -60px;
+      width: 120%;
+      padding: 10px 0;
+      transform: rotate(-4deg);
+      text-align: center;
+      letter-spacing: 6px;
+      font-size: 12px;
+      color: rgba(16, 185, 129, 0.38);
+      border-top: 1px solid rgba(16, 185, 129, 0.25);
+      border-bottom: 1px solid rgba(16, 185, 129, 0.25);
+      pointer-events: none;
+    }
+
+    .terminal-card {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      background: rgba(3, 7, 18, 0.92);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      border-radius: 18px;
+      padding: 26px;
+      box-shadow:
+        0 0 35px rgba(16, 185, 129, 0.18),
+        0 24px 60px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(10px);
+      z-index: 1;
+    }
+
+    .terminal-card::before {
+      content: "CONFIDENTIAL";
+      position: absolute;
+      top: -14px;
+      right: 22px;
+      background: #052e22;
+      color: #86efac;
+      border: 1px solid rgba(134, 239, 172, 0.5);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 11px;
+      letter-spacing: 2px;
+    }
+
+    .status-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      color: #6ee7b7;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 12px #22c55e;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 8px;
+      color: #ecfdf5;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .file-info {
+      border: 1px dashed rgba(52, 211, 153, 0.35);
+      background: rgba(6, 78, 59, 0.18);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 22px;
+      font-size: 12px;
+      color: #a7f3d0;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: #6ee7b7;
+      margin-bottom: 7px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 10px;
+      font-size: 15px;
+      margin-bottom: 16px;
+      outline: none;
+      color: #ecfdf5;
+      background: rgba(2, 6, 23, 0.9);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input::placeholder {
+      color: #4b5563;
+    }
+
+    input:focus {
+      border-color: #34d399;
+      box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.13);
+    }
+
+    button {
+      width: 100%;
+      border: 1px solid rgba(52, 211, 153, 0.55);
+      border-radius: 10px;
+      padding: 13px 16px;
+      background: linear-gradient(135deg, #047857, #065f46);
+      color: #ecfdf5;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      transition: transform 0.1s, filter 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      filter: brightness(1.08);
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.22);
+    }
+
+    button:active {
+      transform: scale(0.99);
+    }
+
+    .error {
+      display: none;
+      margin-top: 14px;
+      color: #fecaca;
+      background: rgba(127, 29, 29, 0.45);
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .hint {
+      margin-top: 18px;
+      font-size: 11px;
+      color: #64748b;
+      text-align: center;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <main class="terminal-card">
+    <div class="status-line">
+      <span class="dot"></span>
+      Sistema de acceso activo
+    </div>
+
+    <h1>Archivo secreto</h1>
+    <p class="subtitle">Credenciales requeridas para desbloquear el expediente clasificado.</p>
+
+    <div class="file-info">
+      Expediente: A-15523<br />
+      Nivel: Restringido<br />
+      Estado: Bloqueado hasta autenticación
+    </div>
+
+    <form id="loginForm">
+      <label for="username">Código de usuario</label>
+      <input id="username" type="text" autocomplete="username" placeholder="Nombre de usuario.” required />
+
+      <label for="password">Clave de acceso</label>
+      <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" required />
+
+      <button type="submit">Desbloquear archivo</button>
+    </form>
+
+    <div id="errorMessage" class="error">Acceso denegado. Credenciales no autorizadas.</div>
+
+    <p class="hint">
+      Prototipo local. Para protección real, usa autenticación desde servidor.
+    </p>
+  </main>
+
+  <script>
+    const VALID_USER = “muchachito”;
+    const VALID_PASSWORD = "iwolfyou”;
+
+    const PDF_PATH = "15-05.2003.pdf";
+
+    const form = document.getElementById("loginForm");
+    const errorMessage = document.getElementById("errorMessage");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (username === VALID_USER && password === VALID_PASSWORD) {
+        window.location.href = PDF_PATH;
+      } else {
+        errorMessage.style.display = "block";
+      }
+    });
+  </script>
+</body>
+</html>
